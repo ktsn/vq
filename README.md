@@ -1,6 +1,9 @@
 # vq
 A light-weight animation helper for Velocity.js
 
+## Dependencies
+vq requires [Velocity.js](http://julian.com/research/velocity/). You have to load Velocity.js before using vq.
+
 ## Example
 
 ```js
