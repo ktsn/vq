@@ -19,9 +19,15 @@ export function sequence(seq) {
 
   if (typeof head !== 'function') return;
 
-  head(function() {
+  if (head.length > 0) {
+    // Ensure there is a callback function as 1st argument
+    head(function() {
+      sequence(tail);
+    });
+  } else {
+    head();
     sequence(tail);
-  });
+  }
 }
 
 function clone(obj) {
