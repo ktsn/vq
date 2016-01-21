@@ -5,6 +5,8 @@
     commonjs: true
     browser: true
     jquery: true
+  globals:
+    Velocity: true
   ecmaFeatures:
     arrowFunctions: true
     blockBindings: true

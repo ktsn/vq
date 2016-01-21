@@ -7,6 +7,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'vq.js',
+    library: 'vq',
     libraryTarget: 'umd'
   },
   resolve: {
@@ -17,8 +18,5 @@ module.exports = {
     loaders: [
       { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ }
     ]
-  },
-  externals: {
-    'velocity-animate': 'Velocity'
   }
 };

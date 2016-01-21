@@ -1,6 +1,11 @@
-import Velocity from 'velocity-animate';
+let animate;
+if (typeof Velocity === 'function') {
+  animate = Velocity;
+} else {
+  animate = $.Velocity;
+}
 
-export default function vq(el, props, opts = null) {
+function vq(el, props, opts = null) {
   if (!opts) {
     opts = props.o;
     props = props.p;
@@ -9,11 +14,11 @@ export default function vq(el, props, opts = null) {
 
   return function(done) {
     opts.complete = done;
-    Velocity(el, props, opts);
+    animate(el, props, opts);
   };
 }
 
-export function sequence(seq) {
+vq.sequence = function sequence(seq) {
   const head = seq[0];
   const tail = seq.slice(1);
 
@@ -28,7 +33,7 @@ export function sequence(seq) {
     head();
     sequence(tail);
   }
-}
+};
 
 function clone(obj) {
   const result = {};
@@ -43,3 +48,5 @@ function clone(obj) {
 
   return result;
 }
+
+module.exports = vq;
