@@ -4,6 +4,9 @@ A light-weight animation helper for Velocity.js
 ## Dependencies
 vq requires [Velocity.js](http://julian.com/research/velocity/). You have to load Velocity.js before using vq.
 
+## Demo
+[http://codepen.io/ktsn/pen/KVZeRP](http://codepen.io/ktsn/pen/KVZeRP)
+
 ## Example
 
 ```js
