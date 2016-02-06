@@ -4,6 +4,7 @@ const gutil = require('gulp-util');
 const rename = require('gulp-rename');
 const eslint = require('gulp-eslint');
 const uglify = require('gulp-uglify');
+const header = require('gulp-header');
 const webpack = require('webpack');
 const Testem = require('testem');
 const yaml = require('js-yaml');
@@ -61,8 +62,14 @@ gulp.task('uglify', () => {
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('build', ['eslint'], (done) => {
-  run('webpack', 'uglify', done);
+gulp.task('header', () => {
+  return gulp.src(['dist/**/*.js'])
+    .pipe(header(fs.readFileSync('./BANNER', 'utf-8'), require('./package.json')))
+    .pipe(gulp.dest('dist'));
+});
+
+gulp.task('build', ['clean', 'eslint'], (done) => {
+  run('webpack', 'uglify', 'header', done);
 });
 
 gulp.task('test', ['webpack:test', 'testem']);
