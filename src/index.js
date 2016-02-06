@@ -1,9 +1,5 @@
-let animate;
-if (typeof Velocity === 'function') {
-  animate = Velocity;
-} else {
-  animate = $.Velocity;
-}
+import animate from './animate';
+import {clone} from './utils';
 
 function vq(el, props, opts = null) {
   if (!opts) {
@@ -34,19 +30,5 @@ vq.sequence = function sequence(seq) {
     sequence(tail);
   }
 };
-
-function clone(obj) {
-  const result = {};
-
-  Object.keys(obj).forEach(function(key) {
-    if (obj[key] && typeof obj[key] === 'object') {
-      result[key] = clone(obj[key]);
-    } else {
-      result[key] = obj[key];
-    }
-  });
-
-  return result;
-}
 
 module.exports = vq;
