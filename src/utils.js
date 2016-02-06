@@ -11,3 +11,13 @@ export function clone(obj, deep = false) {
 
   return result;
 }
+
+export function assign(target, ...sources) {
+  sources.forEach(function(source) {
+    Object.keys(source).forEach(function(key) {
+      target[key] = source[key];
+    });
+  });
+
+  return target;
+}

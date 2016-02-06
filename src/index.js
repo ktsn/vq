@@ -1,4 +1,4 @@
-import animate from './animate';
+import chain from './chain';
 import {clone} from './utils';
 
 function vq(el, props, opts = null) {
@@ -8,10 +8,7 @@ function vq(el, props, opts = null) {
   }
   opts = clone(opts);
 
-  return function(done) {
-    opts.complete = done;
-    animate(el, props, opts);
-  };
+  return chain(el, props, opts);
 }
 
 vq.sequence = function sequence(seq) {
