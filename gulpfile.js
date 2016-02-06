@@ -11,8 +11,8 @@ const fs = require('fs');
 const del = require('del');
 const run = require('run-sequence');
 
-gulp.task('clean', (done) => {
-  del(['.tmp', 'dist'], done);
+gulp.task('clean', () => {
+  return del(['.tmp', 'dist']);
 });
 
 gulp.task('eslint', () => {
