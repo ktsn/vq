@@ -36,13 +36,49 @@ const helpers = {
   loop(count) {
     this._opts.loop = count;
     return this;
+  },
+
+  stagger(msec) {
+    this._opts.stagger = msec;
+    return this;
   }
 };
 
+function run(el, props, opts, done) {
+  if (typeof opts.stagger === 'number') {
+    staggerImpl(el, props, opts, done);
+  } else {
+    opts.complete = done;
+    animate(el, props, opts);
+  }
+}
+
+function staggerImpl(els, props, opts, done) {
+  const interval = opts.stagger;
+  let i = 0;
+  const len = els.length;
+
+  const animateWrapper = function animateWrapper() {
+    // Set complete callback to last animation
+    if (i === len - 1) {
+      opts.complete = done;
+    }
+
+    const el = els[i];
+    animate(el, props, opts);
+
+    ++i;
+    if (i < len) {
+      setTimeout(animateWrapper, interval);
+    }
+  };
+
+  animateWrapper();
+}
+
 export default function chain(el, props, opts) {
   const fn = function fn(done) {
-    fn._opts.complete = done;
-    animate(fn._el, fn._props, fn._opts);
+    run(el, props, opts, done);
   };
   fn._el = el;
   fn._props = props;

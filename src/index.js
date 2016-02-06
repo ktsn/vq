@@ -6,6 +6,9 @@ function vq(el, props, opts = null) {
     opts = props.o;
     props = props.p;
   }
+  // Avoid changing original props and opts
+  // vq may mutate these values internally
+  props = clone(props);
   opts = clone(opts);
 
   return chain(el, props, opts);
