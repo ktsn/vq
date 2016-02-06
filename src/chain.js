@@ -5,6 +5,12 @@ const helpers = {
   delay(msec) {
     this._opts.delay = msec;
     return this;
+  },
+
+  progress(fn, tween = null) {
+    this._props.tween = tween || this._props.tween || [1, 0];
+    this._opts.progress = fn;
+    return this;
   }
 };
 
