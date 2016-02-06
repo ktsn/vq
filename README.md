@@ -41,16 +41,8 @@ var $bar = $('.bar');
 ----------------------------------------*/
 vq.sequence([
   vq($foo, fadeIn),
-  function() { console.log('$foo faded in') },
   vq($bar, fadeIn).delay(1000).stagger(30),
-  function() { console.log('$bar faded in with delay') },
   vq($bar, fadeOut),
-  function(done) {
-    setTimeout(function() {
-      console.log('You can handle asynchronous processing');
-      done();
-    }, 1000);
-  },
   vq($foo, fadeOut),
   function() { console.log('complete!') }
 ]);
