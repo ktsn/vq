@@ -32,6 +32,7 @@
     no-multi-spaces: 1
     no-warning-comments: 1
     no-unused-vars: 1
+    no-console: 1
     camelcase: [1, {properties: never}]
     indent: [1, 2]
     quotes: [1, single]
