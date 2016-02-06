@@ -1,8 +1,16 @@
-# vq
+# vq [![npm version](https://badge.fury.io/js/vq.svg)](https://badge.fury.io/js/vq)
 A light-weight animation helper for Velocity.js
 
 ## Dependencies
 vq requires [Velocity.js](http://julian.com/research/velocity/). You have to load Velocity.js before using vq.
+
+## Installation
+
+```sh
+$ npm install vq
+```
+
+or download from [release page](https://github.com/ktsn/vq/releases).
 
 ## Demo
 [http://codepen.io/ktsn/pen/KVZeRP](http://codepen.io/ktsn/pen/KVZeRP)
