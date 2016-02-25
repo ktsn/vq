@@ -21,23 +21,13 @@ or download from [release page](https://github.com/ktsn/vq/releases).
 /* Animation behaviors
 ----------------------------------------*/
 var fadeIn = {
-  p: {
-    opacity: [1, 0]
-  },
-  o: {
-    duration: 500,
-    easing: 'easeOutQuad'
-  }
+  p: { opacity: [1, 0] },
+  o: { duration: 500, easing: 'easeOutQuad' }
 };
 
 var fadeOut = {
-  p: {
-    opacity: [0, 1]
-  },
-  o: {
-    duration: 500,
-    easing: 'easeInQuad'
-  }
+  p: { opacity: [0, 1] },
+  o: { duration: 500, easing: 'easeInQuad' }
 };
 
 /* Animation elements
@@ -84,6 +74,24 @@ var func = vq(el, fadeIn);
 func();
 ```
 
+You can pass a Velocity's progress callback to the 2nd argument or the value of `p`.
+
+```js
+var swing = {
+  p: function(el, t, r, t0, tween) {
+    var offset = 100 * Math.sin(2 * tween * Math.PI);
+    el[0].style.transform = 'translate3d(' + offset + 'px, 0, 0)';
+  },
+  o: {
+    duration: 1000,
+    easing: 'easeOutCubic'
+  }
+}
+
+var func = vq(el, swing);
+func();
+```
+
 The function receives 1st argument as completion callback. You can handle the animation completion from the callback;
 
 ```js
@@ -94,18 +102,25 @@ func(function() {
 ```
 
 ### vq.sequence(funcs)
-This function receives the array of functions and executes each function sequentially. If the given function has callback function as 1st argument, vq.sequence waits until the callback is called.
+This function receives the array of functions and executes each function sequentially. If the given function returns Promise object or has callback function as 1st argument, vq.sequence waits until the asynchronous processes are finished.
 
 ```js
 vq.sequence([
-  function () { console.log('1'); },
-  function (done) {
+  function(done) {
     setTimeout(function() {
-      console.log('2')
+      console.log('1')
       done();
     }, 1000);
   },
-  function () { console.log('3'); }
+  function() {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        console.log('2');
+        resolve();
+      }, 500);
+    });
+  },
+  function() { console.log('3'); }
 ]);
 // The output order is 1 -> 2 -> 3
 ```
