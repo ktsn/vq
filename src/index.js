@@ -37,13 +37,19 @@ vq.sequence = function sequence(seq) {
 
   if (head.length > 0) {
     // Ensure there is a callback function as 1st argument
-    head(function() {
+    return head(function() {
       sequence(tail);
     });
-  } else {
-    head();
-    sequence(tail);
   }
+
+  const res = head();
+
+  // Wait until the head function is terminated if the returned value is thenable
+  if (res && typeof res.then === 'function') {
+    return res.then(() => sequence(tail));
+  }
+
+  return sequence(tail);
 };
 
 module.exports = vq;

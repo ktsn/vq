@@ -1,5 +1,6 @@
 import spy from './velocity-spy';
 import assert from 'power-assert';
+import {Promise} from 'es6-promise';
 import vq from '../src/index';
 
 describe('Index:', () => {
@@ -90,5 +91,59 @@ describe('Index:', () => {
 
       assert(result.args[2].complete === fn);
     });
+  });
+
+  describe('vq.sequence function', () => {
+
+    it('executes the given functions sequentially', (done) => {
+      const res = [];
+
+      vq.sequence([
+        () => res.push(1),
+        () => res.push(2),
+        () => res.push(3),
+        () => {
+          assert.deepEqual(res, [1, 2, 3]);
+          done();
+        }
+      ]);
+    });
+
+    it('handles asyncronous functions by callbacks', (done) => {
+      const res = [];
+
+      vq.sequence([
+        (done) => {
+          setTimeout(() => {
+            res.push(1);
+            done();
+          }, 1);
+        },
+        () => res.push(2),
+        () => {
+          assert.deepEqual(res, [1, 2]);
+          done();
+        }
+      ]);
+    });
+
+    it('handles asyncronous functions by promises', (done) => {
+      const res = [];
+
+      vq.sequence([
+        () => new Promise((resolve) => {
+          setTimeout(() => {
+            res.push(1);
+            resolve();
+          }, 1);
+        }),
+        () => res.push(2),
+        () => {
+          assert.deepEqual(res, [1, 2]);
+          done();
+        }
+      ]);
+    });
+
   });
 });
