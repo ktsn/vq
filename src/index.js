@@ -30,26 +30,32 @@ function vq(el, props, opts = null) {
 }
 
 vq.sequence = function sequence(seq) {
-  const head = seq[0];
+  if (seq.length === 0) return;
+
+  const head = unify(seq[0]);
   const tail = seq.slice(1);
 
-  if (typeof head !== 'function') return;
-
-  if (head.length > 0) {
-    // Ensure there is a callback function as 1st argument
-    return head(function() {
-      sequence(tail);
-    });
-  }
-
-  const res = head();
-
-  // Wait until the head function is terminated if the returned value is thenable
-  if (res && typeof res.then === 'function') {
-    return res.then(() => sequence(tail));
-  }
-
-  return sequence(tail);
+  return head(() => sequence(tail));
 };
+
+function unify(fn) {
+  return function(done) {
+    if (typeof fn !== 'function') return done();
+
+    if (fn.length > 0) {
+      // Ensure there is a callback function as 1st argument
+      return fn(done);
+    }
+
+    const res = fn();
+
+    // Wait until the function is terminated if the returned value is thenable
+    if (res && typeof res.then === 'function') {
+      return res.then(done);
+    }
+
+    return done();
+  };
+}
 
 module.exports = vq;
