@@ -145,5 +145,34 @@ describe('Index:', () => {
       ]);
     });
 
+    it('ignores non-function objects', () => {
+      const res = [];
+
+      vq.sequence([
+        () => res.push(1),
+        null,
+        () => res.push(2),
+        'this string will be ignored',
+        () => res.push(3),
+        12345,
+        () => res.push(4),
+        undefined,
+        () => res.push(5)
+      ]);
+
+      assert.deepEqual(res, [1, 2, 3, 4, 5]);
+    });
+
+    it('ignores non-function objects even if edge case', () => {
+      let res = false;
+
+      vq.sequence([
+        null,
+        () => res = true,
+        undefined
+      ]);
+
+      assert(res);
+    });
   });
 });
