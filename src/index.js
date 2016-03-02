@@ -38,6 +38,21 @@ vq.sequence = function sequence(seq) {
   return head(() => sequence(tail));
 };
 
+vq.parallel = function parallel(fns) {
+  let waiting = fns.length;
+
+  return function(done) {
+    const listener = function listener() {
+      --waiting;
+      if (waiting === 0) done();
+    };
+
+    for (const fn of fns) {
+      unify(fn)(listener);
+    }
+  };
+};
+
 function unify(fn) {
   return function(done) {
     if (typeof fn !== 'function') return done();

@@ -175,4 +175,50 @@ describe('Index:', () => {
       assert(res);
     });
   });
+
+  describe('vq.parallel function', () => {
+    it('returns thunk function', () => {
+      assert(typeof vq.parallel([]) === 'function');
+    });
+
+    it('calls given functions in parallel', () => {
+      /* eslint no-unused-vars: 0 */
+      let sum = 0;
+
+      vq.parallel([
+        (done) => { sum += 1; },
+        () => new Promise(() => { sum += 2; }),
+        () => sum += 3
+      ])();
+
+      assert(sum === 6);
+    });
+
+    it('should call the callback after all functions are finished', (done) => {
+      let sum = 0;
+
+      vq.parallel([
+        (done) => {
+          setTimeout(() => {
+            sum += 2;
+            assert(sum === 3);
+            done();
+          }, 5);
+        },
+
+        () => new Promise((resolve) => {
+          setTimeout(() => {
+            sum += 3;
+            assert(sum === 6);
+            resolve();
+          }, 10);
+        }),
+
+        () => {
+          sum += 1;
+          assert(sum === 1);
+        }
+      ])(done);
+    });
+  });
 });
