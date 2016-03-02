@@ -45,6 +45,9 @@ const helpers = {
 };
 
 function run(el, props, opts, done) {
+  // Always prevent Velocity enqueuing animations
+  opts.queue = false;
+
   if (typeof opts.stagger === 'number') {
     staggerImpl(el, props, opts, done);
   } else {
