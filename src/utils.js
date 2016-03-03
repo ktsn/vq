@@ -21,3 +21,5 @@ export function assign(target, ...sources) {
 
   return target;
 }
+
+export function noop() {}

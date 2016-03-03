@@ -95,6 +95,21 @@ describe('Index:', () => {
 
   describe('vq.sequence function', () => {
 
+    it('returns thunk function', () => {
+      assert(typeof vq.sequence([]) === 'function');
+    });
+
+    it('should call the callback after the all functions are finished', (done) => {
+      let res = 0;
+
+      vq.sequence([
+        () => res += 1,
+        () => res += 2,
+        () => res += 3,
+        () => assert(res === 6)
+      ])(done);
+    });
+
     it('executes the given functions sequentially', (done) => {
       const res = [];
 
@@ -106,7 +121,7 @@ describe('Index:', () => {
           assert.deepEqual(res, [1, 2, 3]);
           done();
         }
-      ]);
+      ])();
     });
 
     it('handles asyncronous functions by callbacks', (done) => {
@@ -124,7 +139,7 @@ describe('Index:', () => {
           assert.deepEqual(res, [1, 2]);
           done();
         }
-      ]);
+      ])();
     });
 
     it('handles asyncronous functions by promises', (done) => {
@@ -142,8 +157,99 @@ describe('Index:', () => {
           assert.deepEqual(res, [1, 2]);
           done();
         }
-      ]);
+      ])();
     });
 
+    it('ignores non-function objects', () => {
+      const res = [];
+
+      vq.sequence([
+        () => res.push(1),
+        null,
+        () => res.push(2),
+        'this string will be ignored',
+        () => res.push(3),
+        12345,
+        () => res.push(4),
+        undefined,
+        () => res.push(5)
+      ])();
+
+      assert.deepEqual(res, [1, 2, 3, 4, 5]);
+    });
+
+    it('ignores non-function objects even if edge case', () => {
+      let res = false;
+
+      vq.sequence([
+        null,
+        () => res = true,
+        undefined
+      ])();
+
+      assert(res);
+    });
+
+    it('does nothing if no callback is given', () => {
+      assert.doesNotThrow(() => {
+        vq.sequence([
+          () => {}
+        ])();
+      });
+    });
+  });
+
+  describe('vq.parallel function', () => {
+    it('returns thunk function', () => {
+      assert(typeof vq.parallel([]) === 'function');
+    });
+
+    it('calls given functions in parallel', () => {
+      /* eslint no-unused-vars: 0 */
+      let sum = 0;
+
+      vq.parallel([
+        (done) => { sum += 1; },
+        () => new Promise(() => { sum += 2; }),
+        () => sum += 3
+      ])();
+
+      assert(sum === 6);
+    });
+
+    it('should call the callback after all functions are finished', (done) => {
+      let sum = 0;
+
+      vq.parallel([
+        (done) => {
+          setTimeout(() => {
+            sum += 2;
+            assert(sum === 3);
+            done();
+          }, 5);
+        },
+
+        () => new Promise((resolve) => {
+          setTimeout(() => {
+            sum += 3;
+            assert(sum === 6);
+            resolve();
+          }, 10);
+        }),
+
+        () => {
+          sum += 1;
+          assert(sum === 1);
+        }
+      ])(done);
+    });
+
+    it('does nothing if no callback is given', () => {
+      assert.doesNotThrow(() => {
+        vq.parallel([
+          () => {}
+        ])();
+      });
+    });
   });
 });

@@ -1,5 +1,5 @@
 import chain from './chain';
-import {clone} from './utils';
+import {clone, noop} from './utils';
 
 function vq(el, props, opts = null) {
   if (!el || !props) throw new Error('Must have two or three args');
@@ -30,26 +30,61 @@ function vq(el, props, opts = null) {
 }
 
 vq.sequence = function sequence(seq) {
-  const head = seq[0];
+  return function(done) {
+    // Do not use ES default parameters because the babel eliminates actual arguments.
+    // Then we cannot detect whether the callback is set or not.
+    if (typeof done !== 'function') done = noop;
+
+    sequenceImpl(seq, done);
+  };
+};
+
+vq.parallel = function parallel(fns) {
+  let waiting = fns.length;
+
+  return function(done) {
+    // Do not use ES default parameters because the babel eliminates actual arguments.
+    // Then we cannot detect whether the callback is set or not.
+    if (typeof done !== 'function') done = noop;
+
+    const listener = function listener() {
+      --waiting;
+      if (waiting === 0) done();
+    };
+
+    for (const fn of fns) {
+      unify(fn)(listener);
+    }
+  };
+};
+
+function sequenceImpl(seq, done) {
+  if (seq.length === 0) return done();
+
+  const head = unify(seq[0]);
   const tail = seq.slice(1);
 
-  if (typeof head !== 'function') return;
+  return head(() => sequenceImpl(tail, done));
+}
 
-  if (head.length > 0) {
-    // Ensure there is a callback function as 1st argument
-    return head(function() {
-      sequence(tail);
-    });
-  }
+function unify(fn) {
+  return function(done) {
+    if (typeof fn !== 'function') return done();
 
-  const res = head();
+    if (fn.length > 0) {
+      // Ensure there is a callback function as 1st argument
+      return fn(done);
+    }
 
-  // Wait until the head function is terminated if the returned value is thenable
-  if (res && typeof res.then === 'function') {
-    return res.then(() => sequence(tail));
-  }
+    const res = fn();
 
-  return sequence(tail);
-};
+    // Wait until the function is terminated if the returned value is thenable
+    if (res && typeof res.then === 'function') {
+      return res.then(done);
+    }
+
+    return done();
+  };
+}
 
 module.exports = vq;

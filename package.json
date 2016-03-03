@@ -1,7 +1,7 @@
 {
   "name": "vq",
   "version": "0.3.0",
-  "description": "A light-weight animation helper for Velocity.js",
+  "description": "A light-weight and functional animation helper for Velocity.js",
   "keywords": [
     "animation",
     "animate",

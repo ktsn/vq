@@ -45,6 +45,9 @@ const helpers = {
 };
 
 function run(el, props, opts, done) {
+  // Always prevent Velocity enqueuing animations
+  opts.queue = false;
+
   if (typeof opts.stagger === 'number') {
     staggerImpl(el, props, opts, done);
   } else {
@@ -78,7 +81,7 @@ function staggerImpl(els, props, opts, done) {
 
 export default function chain(el, props, opts) {
   const fn = function fn(done) {
-    run(el, props, opts, done);
+    run(fn._el, fn._props, fn._opts, done);
   };
   fn._el = el;
   fn._props = props;
