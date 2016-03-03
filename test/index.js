@@ -95,6 +95,21 @@ describe('Index:', () => {
 
   describe('vq.sequence function', () => {
 
+    it('returns thunk function', () => {
+      assert(typeof vq.sequence([]) === 'function');
+    });
+
+    it('should call the callback after the all functions are finished', (done) => {
+      let res = 0;
+
+      vq.sequence([
+        () => res += 1,
+        () => res += 2,
+        () => res += 3,
+        () => assert(res === 6)
+      ])(done);
+    });
+
     it('executes the given functions sequentially', (done) => {
       const res = [];
 
@@ -106,7 +121,7 @@ describe('Index:', () => {
           assert.deepEqual(res, [1, 2, 3]);
           done();
         }
-      ]);
+      ])();
     });
 
     it('handles asyncronous functions by callbacks', (done) => {
@@ -124,7 +139,7 @@ describe('Index:', () => {
           assert.deepEqual(res, [1, 2]);
           done();
         }
-      ]);
+      ])();
     });
 
     it('handles asyncronous functions by promises', (done) => {
@@ -142,7 +157,7 @@ describe('Index:', () => {
           assert.deepEqual(res, [1, 2]);
           done();
         }
-      ]);
+      ])();
     });
 
     it('ignores non-function objects', () => {
@@ -158,7 +173,7 @@ describe('Index:', () => {
         () => res.push(4),
         undefined,
         () => res.push(5)
-      ]);
+      ])();
 
       assert.deepEqual(res, [1, 2, 3, 4, 5]);
     });
@@ -170,9 +185,17 @@ describe('Index:', () => {
         null,
         () => res = true,
         undefined
-      ]);
+      ])();
 
       assert(res);
+    });
+
+    it('does nothing if no callback is given', () => {
+      assert.doesNotThrow(() => {
+        vq.sequence([
+          () => {}
+        ])();
+      });
     });
   });
 
@@ -219,6 +242,14 @@ describe('Index:', () => {
           assert(sum === 1);
         }
       ])(done);
+    });
+
+    it('does nothing if no callback is given', () => {
+      assert.doesNotThrow(() => {
+        vq.parallel([
+          () => {}
+        ])();
+      });
     });
   });
 });

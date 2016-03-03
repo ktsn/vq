@@ -1,5 +1,5 @@
 import chain from './chain';
-import {clone} from './utils';
+import {clone, noop} from './utils';
 
 function vq(el, props, opts = null) {
   if (!el || !props) throw new Error('Must have two or three args');
@@ -30,18 +30,23 @@ function vq(el, props, opts = null) {
 }
 
 vq.sequence = function sequence(seq) {
-  if (seq.length === 0) return;
+  return function(done) {
+    // Do not use ES default parameters because the babel eliminates actual arguments.
+    // Then we cannot detect whether the callback is set or not.
+    if (typeof done !== 'function') done = noop;
 
-  const head = unify(seq[0]);
-  const tail = seq.slice(1);
-
-  return head(() => sequence(tail));
+    sequenceImpl(seq, done);
+  };
 };
 
 vq.parallel = function parallel(fns) {
   let waiting = fns.length;
 
   return function(done) {
+    // Do not use ES default parameters because the babel eliminates actual arguments.
+    // Then we cannot detect whether the callback is set or not.
+    if (typeof done !== 'function') done = noop;
+
     const listener = function listener() {
       --waiting;
       if (waiting === 0) done();
@@ -52,6 +57,15 @@ vq.parallel = function parallel(fns) {
     }
   };
 };
+
+function sequenceImpl(seq, done) {
+  if (seq.length === 0) return done();
+
+  const head = unify(seq[0]);
+  const tail = seq.slice(1);
+
+  return head(() => sequenceImpl(tail, done));
+}
 
 function unify(fn) {
   return function(done) {
