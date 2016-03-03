@@ -37,17 +37,19 @@ var $bar = $('.bar');
 
 /* Animation sequence
 ----------------------------------------*/
-vq.sequence([
+var seq = vq.sequence([
   vq($foo, fadeIn),
   vq($bar, fadeIn).delay(1000).stagger(30),
   vq($bar, fadeOut),
   vq($foo, fadeOut),
   function() { console.log('complete!') }
 ]);
+
+seq();
 ```
 
 ## API
-vq provides global function `vq(el, props, opts)` and `vq.sequence(funcs)`.
+vq provides global function `vq(el, props, opts)`, `vq.sequence(funcs)` and `vq.parallel(funcs)`.
 
 ### vq(el, props, opts)
 This function returns a function that executes animation by given element, property and options.
@@ -102,10 +104,10 @@ func(function() {
 ```
 
 ### vq.sequence(funcs)
-This function receives the array of functions and executes each function sequentially. If the given function returns Promise object or has callback function as 1st argument, vq.sequence waits until the asynchronous processes are finished.
+This function receives the array of functions and returns a function to execute them sequentially. If the given function returns Promise object or has callback function as 1st argument, vq.sequence waits until the asynchronous processes are finished.
 
 ```js
-vq.sequence([
+var seq = vq.sequence([
   function(done) {
     setTimeout(function() {
       console.log('1')
@@ -122,13 +124,15 @@ vq.sequence([
   },
   function() { console.log('3'); }
 ]);
+
+seq();
 // The output order is 1 -> 2 -> 3
 ```
 
 The function is useful with using `vq(el, props, opts)`.
 
 ```js
-vq.sequence([
+var animSeq = vq.sequence([
   vq(el1, animation1),
   vq(el2, animation2),
   vq(el3, animation3),
@@ -136,6 +140,32 @@ vq.sequence([
     console.log('Three animations are completed');
   }
 ]);
+```
+
+### vq.parallel(funcs)
+This function is same as `vq.sequence` except to execute in parallel.
+
+```js
+var para = vq.parallel([
+  function(done) {
+    setTimeout(function() {
+      console.log('1')
+      done();
+    }, 1000);
+  },
+  function() {
+    return new Promise(function(resolve, reject) {
+      setTimeout(function() {
+        console.log('2');
+        resolve();
+      }, 500);
+    });
+  },
+  function() { console.log('3'); }
+]);
+
+para();
+// The output order may be 3 -> 2 -> 1
 ```
 
 ### vq helper functions
