@@ -1,5 +1,5 @@
 # vq [![npm version](https://badge.fury.io/js/vq.svg)](https://badge.fury.io/js/vq)
-A light-weight animation helper for Velocity.js
+A light-weight and functional animation helper for Velocity.js
 
 ## Dependencies
 vq requires [Velocity.js](http://julian.com/research/velocity/). You have to load Velocity.js before using vq.
