@@ -52,9 +52,7 @@ export function parallel(fns) {
       if (waiting === 0) done();
     };
 
-    for (let i = 0, len = fns.length; i < len; i++) {
-      unify(fns[i])(listener);
-    }
+    fns.map(unify).forEach(fn => fn(listener));
   };
 }
 
