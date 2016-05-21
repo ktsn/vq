@@ -65,6 +65,9 @@ function sequenceImpl(seq, done) {
   return head(() => sequenceImpl(tail, done));
 }
 
+/**
+ * Unify the given function to callback contination style
+ */
 function unify(fn) {
   return function(done) {
     if (typeof fn !== 'function') return done();
@@ -81,6 +84,7 @@ function unify(fn) {
       return res.then(done);
     }
 
+    // Just `done` if no asynchronous continuation method is given
     return done();
   };
 }
