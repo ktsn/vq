@@ -13,7 +13,8 @@ $ npm install vq
 or download from [release page](https://github.com/ktsn/vq/releases).
 
 ## Demo
-[http://codepen.io/ktsn/pen/KVZeRP](http://codepen.io/ktsn/pen/KVZeRP)
+- [Sequencial Animation](http://codepen.io/ktsn/pen/KVZeRP)
+- [Event Handling](http://codepen.io/ktsn/pen/qZzzqX)
 
 ## Example
 
