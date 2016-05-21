@@ -45,7 +45,6 @@ describe('Event helpers:', () => {
 });
 
 function emit(el, name) {
-  const event = document.createEvent('UIEvent');
-  event.initUIEvent(name, true, true);
+  const event = new Event(name);
   el.dispatchEvent(event);
 }

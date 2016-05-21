@@ -1,4 +1,8 @@
-# vq [![npm version](https://badge.fury.io/js/vq.svg)](https://badge.fury.io/js/vq)
+# vq
+
+[![npm version](https://badge.fury.io/js/vq.svg)](https://badge.fury.io/js/vq)
+[![Build Status](https://travis-ci.org/ktsn/vq.svg?branch=master)](https://travis-ci.org/ktsn/vq)
+
 A light-weight and functional animation helper for Velocity.js
 
 ## Dependencies

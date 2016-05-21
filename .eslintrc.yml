@@ -7,21 +7,9 @@
     jquery: true
   globals:
     Velocity: true
-  ecmaFeatures:
-    arrowFunctions: true
-    blockBindings: true
-    classes: true
-    defaultParams: true
-    destructuring: true
-    forOf: true
-    generators: true
-    objectLiteralComputedProperties: true,
-    objectLiteralShorthandMethods: true,
-    objectLiteralShorthandProperties: true,
-    restParams: true
-    spread: true
-    templateStrings: true
-    modules: true
+  parserOptions:
+    ecmaVersion: 6
+    sourceType: module
   rules:
     dot-notation: 2
     eqeqeq: [2, smart]
