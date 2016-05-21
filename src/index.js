@@ -1,5 +1,6 @@
 import chain from './chain';
-import {clone, noop} from './utils';
+import {assign, clone, noop} from './utils';
+import * as event from './event';
 
 function vq(el, props, opts = null) {
   if (!el || !props) throw new Error('Must have two or three args');
@@ -86,5 +87,7 @@ function unify(fn) {
     return done();
   };
 }
+
+assign(vq, event);
 
 module.exports = vq;

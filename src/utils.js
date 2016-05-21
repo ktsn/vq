@@ -22,4 +22,12 @@ export function assign(target, ...sources) {
   return target;
 }
 
+export function on(el, name, f) {
+  el.addEventListener(name, f);
+}
+
+export function off(el, name, f) {
+  el.removeEventListener(name, f);
+}
+
 export function noop() {}
