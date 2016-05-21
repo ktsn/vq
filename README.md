@@ -219,10 +219,8 @@ var seq = vq.sequence([
 seq();
 ```
 
-### vq helper functions
-The function returned by `vq(el, props, opts)` has some helper functions. The helpers can modify animation options and behaviors.
-
-The helper function is chainable.
+### vq chainable helper methods
+The function returned by `vq(el, props, opts)` has some chainable helper methods. The helpers can modify animation options and behaviors.
 
 ```js
 vq.sequence([
