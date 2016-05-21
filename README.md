@@ -13,7 +13,8 @@ $ npm install vq
 or download from [release page](https://github.com/ktsn/vq/releases).
 
 ## Demo
-[http://codepen.io/ktsn/pen/KVZeRP](http://codepen.io/ktsn/pen/KVZeRP)
+- [Sequencial Animation](http://codepen.io/ktsn/pen/KVZeRP)
+- [Event Handling](http://codepen.io/ktsn/pen/qZzzqX)
 
 ## Example
 
@@ -168,10 +169,58 @@ para();
 // The output order may be 3 -> 2 -> 1
 ```
 
-### vq helper functions
-The function returned by `vq(el, props, opts)` has some helper functions. The helpers can modify animation options and behaviors.
+### Event helpers
+vq can handle DOM events by event helpers and execute some animation after receiving the events.  
+vq has following event helpers.
 
-The helper function is chainable.
+- click
+- dblclick
+- mousedown
+- mouseup
+- mousemove
+- mouseenter
+- mouseleave
+- focus
+- blur
+- change
+- input
+- scroll
+- load
+
+The helper functions expect a DOM element for the argument and returns a new function.
+The returned function expect an animation function that you will get from `vq`, `vq.sequence` or `vq.parallel` functions.
+
+```js
+var click = vq.click(window);
+
+var fade = vq.sequence([
+  click(vq(el, fadeIn)),
+  click(vq(el, fadeOut)),
+  function(done) { fade(done); }
+]);
+
+fade();
+```
+
+You can create a new event helper by using `vq.element` function.
+`vq.element` receives an element, a DOM event name and an optional filter function.
+If you specify the filter function, your event helper does not execute an animation function until the filter function returns `true`.
+
+```js
+var helloWorld = vq.element(input, 'input', function(event) {
+  return event.target.value === 'Hello World';
+});
+
+var seq = vq.sequence([
+  helloWorld(vq(input, fadeOut)),
+  // some other animations
+]);
+
+seq();
+```
+
+### vq chainable helper methods
+The function returned by `vq(el, props, opts)` has some chainable helper methods. The helpers can modify animation options and behaviors.
 
 ```js
 vq.sequence([
