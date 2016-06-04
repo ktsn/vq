@@ -1,19 +1,34 @@
-import {on, off} from './utils';
+import {unify, on, off, noop} from './utils';
 
-export const element = (el, name, filter = noFilter) => behavior => done => {
-  function go(event) {
-    if (!filter(event)) return;
+/**
+ * Helper function to create event helpers
+ * The function should not be exposed
+ */
+function create(f) {
+  return behavior => done => {
+    if (typeof done !== 'function') done = noop;
+    f(unify(behavior), done);
+  };
+}
 
-    off(el, name, go);
-    behavior(done);
-  }
+export function element(el, name, filter = noFilter) {
+  return create((behavior, done) => {
+    function go(event) {
+      if (!filter(event)) return;
 
-  on(el, name, go);
-};
+      off(el, name, go);
+      behavior(done);
+    }
 
-export const delay = msec => behavior => done => {
-  setTimeout(() => behavior(done), msec);
-};
+    on(el, name, go);
+  });
+}
+
+export function delay(msec) {
+  return create((behavior, done) => {
+    setTimeout(() => behavior(done), msec);
+  });
+}
 
 function noFilter() { return true; }
 

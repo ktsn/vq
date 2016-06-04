@@ -1,5 +1,5 @@
 import chain from './chain';
-import {clone, noop} from './utils';
+import {unify, clone, noop} from './utils';
 
 export function vq(el, props, opts = null) {
   if (!el || !props) throw new Error('Must have two or three args');
@@ -63,28 +63,4 @@ function sequenceImpl(seq, done) {
   const tail = seq.slice(1);
 
   return head(() => sequenceImpl(tail, done));
-}
-
-/**
- * Unify the given function to callback contination style
- */
-function unify(fn) {
-  return function(done) {
-    if (typeof fn !== 'function') return done();
-
-    if (fn.length > 0) {
-      // Ensure there is a callback function as 1st argument
-      return fn(done);
-    }
-
-    const res = fn();
-
-    // Wait until the function is terminated if the returned value is thenable
-    if (res && typeof res.then === 'function') {
-      return res.then(done);
-    }
-
-    // Just `done` if no asynchronous continuation method is given
-    return done();
-  };
 }
