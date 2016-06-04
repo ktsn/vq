@@ -68,3 +68,7 @@ export function element(el, name, filter = noFilter) {
 }
 
 function noFilter() { return true; }
+
+export const delay = msec => behavior => done => {
+  setTimeout(() => behavior(done), msec);
+};
