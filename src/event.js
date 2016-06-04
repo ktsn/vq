@@ -1,4 +1,40 @@
-import {on, off} from './utils';
+import {unify, on, off, noop} from './utils';
+
+/**
+ * Helper function to create event helpers
+ * The function should not be exposed
+ */
+function create(f) {
+  return behavior => done => {
+    if (typeof done !== 'function') done = noop;
+    f(unify(behavior), done);
+  };
+}
+
+export function element(el, name, filter = noFilter) {
+  return create((behavior, done) => {
+    function go(event) {
+      if (!filter(event)) return;
+
+      off(el, name, go);
+      behavior(done);
+    }
+
+    on(el, name, go);
+  });
+}
+
+export function delay(msec) {
+  return create((behavior, done) => {
+    setTimeout(() => behavior(done), msec);
+  });
+}
+
+function noFilter() { return true; }
+
+/**
+ * Convenient helpers for DOM events
+ */
 
 export function click(el) {
   return element(el, 'click');
@@ -51,24 +87,3 @@ export function scroll(el) {
 export function load(el) {
   return element(el, 'load');
 }
-
-export function element(el, name, filter = noFilter) {
-  return function(behavior) {
-    return function(done) {
-      function go(event) {
-        if (!filter(event)) return;
-
-        off(el, name, go);
-        behavior(done);
-      }
-
-      on(el, name, go);
-    };
-  };
-}
-
-function noFilter() { return true; }
-
-export const delay = msec => behavior => done => {
-  setTimeout(() => behavior(done), msec);
-};

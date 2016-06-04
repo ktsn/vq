@@ -1,4 +1,5 @@
 import assert from 'power-assert';
+import {Promise} from 'es6-promise';
 
 import {element, delay} from '../src/event';
 
@@ -40,6 +41,38 @@ describe('Event helpers:', () => {
       input.value = 'filter';
       emit(input, 'input');
       assert(count === 1);
+    });
+
+    it('detects the finish of listener function by callback or promise', (done) => {
+      const f = element(input, 'input');
+
+      let normal = false;
+      // normal callback
+      f(() => {})(() => normal = true);
+      emit(input, 'input');
+      assert(normal);
+
+      // callack with completion callback
+      let cb = false;
+      f((done) => {
+        setTimeout(done, 50);
+      })(() => cb = true);
+      emit(input, 'input');
+      assert(!cb);
+      setTimeout(() => assert(cb), 50);
+
+      // callback with promise
+      let p = false;
+      f(() => {
+        return new Promise(resolve => {
+          setTimeout(resolve, 100);
+        });
+      })(() => p = true);
+      emit(input, 'input');
+      assert(!p);
+      setTimeout(() => assert(p), 100);
+
+      setTimeout(done, 150);
     });
   });
 
