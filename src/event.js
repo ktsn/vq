@@ -1,5 +1,26 @@
 import {on, off} from './utils';
 
+export const element = (el, name, filter = noFilter) => behavior => done => {
+  function go(event) {
+    if (!filter(event)) return;
+
+    off(el, name, go);
+    behavior(done);
+  }
+
+  on(el, name, go);
+};
+
+export const delay = msec => behavior => done => {
+  setTimeout(() => behavior(done), msec);
+};
+
+function noFilter() { return true; }
+
+/**
+ * Convenient helpers for DOM events
+ */
+
 export function click(el) {
   return element(el, 'click');
 }
@@ -51,24 +72,3 @@ export function scroll(el) {
 export function load(el) {
   return element(el, 'load');
 }
-
-export function element(el, name, filter = noFilter) {
-  return function(behavior) {
-    return function(done) {
-      function go(event) {
-        if (!filter(event)) return;
-
-        off(el, name, go);
-        behavior(done);
-      }
-
-      on(el, name, go);
-    };
-  };
-}
-
-function noFilter() { return true; }
-
-export const delay = msec => behavior => done => {
-  setTimeout(() => behavior(done), msec);
-};
