@@ -174,6 +174,8 @@ para();
 ```
 
 ### Event helpers
+
+#### DOM Event helpers
 vq can handle DOM events by event helpers and execute some animation after receiving the events.  
 vq has following event helpers.
 
@@ -221,6 +223,21 @@ var seq = vq.sequence([
 ]);
 
 seq();
+```
+
+#### Delay Helper
+
+`vq.delay(msec)` returns the function that delays given callback for `msec`.
+This function can use for not only animation function but also normal functions.
+
+```js
+var delay1s = vq.delay(1000);
+
+var delayedFn = delay1s(function() {
+  console.log('This message is delayed 1sec');
+});
+
+delayedFn();
 ```
 
 ### vq chainable helper methods
