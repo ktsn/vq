@@ -274,5 +274,9 @@ describe('Index:', () => {
         assert.deepEqual(args, [els[i], 'stop']);
       });
     });
+
+    it('call callback function after stopping elements', (done) => {
+      vq.stop([document.createElement('div')])(done);
+    });
   });
 });

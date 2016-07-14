@@ -58,8 +58,11 @@ export function parallel(fns) {
 }
 
 export function stop(els) {
-  return function() {
+  return function(done) {
+    if (typeof done !== 'function') done = noop;
+
     els.forEach(_stop);
+    done();
   };
 }
 
