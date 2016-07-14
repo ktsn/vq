@@ -295,5 +295,8 @@ Set the loop option to `count`.
 #### .stagger(msec)
 Set the delay between each element animation to `msec`.
 
+## Contribution
+Contribution is welcome! Feel free to open an issue or a pull request.
+
 ## License
 MIT
