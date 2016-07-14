@@ -1,4 +1,4 @@
-import animate from './animate';
+import {animate} from './animate';
 import {assign} from './utils';
 
 const helpers = {

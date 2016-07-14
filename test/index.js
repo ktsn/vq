@@ -24,7 +24,7 @@ describe('Index:', () => {
 
       vq(el, props, opts)();
 
-      const args = result.args;
+      const args = result[0].args;
       assert(args[0] === el);
       Object.keys(props).forEach((key) => assert(args[1][key] === props[key]));
       Object.keys(opts).forEach((key) => assert(args[2][key] === opts[key]));
@@ -35,7 +35,7 @@ describe('Index:', () => {
 
       vq(el, { p: props, o: opts })();
 
-      const args = result.args;
+      const args = result[0].args;
       assert(args[0] === el);
       Object.keys(props).forEach((key) => assert(args[1][key] === props[key]));
       Object.keys(opts).forEach((key) => assert(args[2][key] === opts[key]));
@@ -47,10 +47,10 @@ describe('Index:', () => {
       vq(el, prog, opts)();
 
       // should set tween value to [1, 0]
-      assert(result.args[1].tween[0] === 1);
-      assert(result.args[1].tween[1] === 0);
+      assert(result[0].args[1].tween[0] === 1);
+      assert(result[0].args[1].tween[1] === 0);
 
-      assert(result.args[2].progress === prog);
+      assert(result[0].args[2].progress === prog);
     });
 
     it('accepts progress function as single object format', () => {
@@ -59,10 +59,10 @@ describe('Index:', () => {
       vq(el, { p: prog, o: opts })();
 
       // should set tween value to [1, 0]
-      assert(result.args[1].tween[0] === 1);
-      assert(result.args[1].tween[1] === 0);
+      assert(result[0].args[1].tween[0] === 1);
+      assert(result[0].args[1].tween[1] === 0);
 
-      assert(result.args[2].progress === prog);
+      assert(result[0].args[2].progress === prog);
     });
 
     it('throws an error if the arg length is less than two', () => {
@@ -89,7 +89,7 @@ describe('Index:', () => {
 
       vq(el, props, opts)(fn);
 
-      assert(result.args[2].complete === fn);
+      assert(result[0].args[2].complete === fn);
     });
   });
 
@@ -249,6 +249,29 @@ describe('Index:', () => {
         vq.parallel([
           () => {}
         ])();
+      });
+    });
+  });
+
+  describe('vq.stop function', () => {
+    it('returns thunk function', () => {
+      const el = document.createElement('div');
+      assert(typeof vq.stop([el]) === 'function');
+    });
+
+    it('emits stop request for all elements', () => {
+      const result = spy();
+
+      const els = [
+        document.createElement('div'),
+        document.createElement('p'),
+        document.createElement('span')
+      ];
+
+      vq.stop(els)();
+
+      result.forEach(({ args }, i) => {
+        assert.deepEqual(args, [els[i], 'stop']);
       });
     });
   });

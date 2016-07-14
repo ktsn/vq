@@ -173,6 +173,22 @@ para();
 // The output order may be 3 -> 2 -> 1
 ```
 
+### vq.stop(els)
+This function creates *animation stopper* for given elements.
+If you execute returned function, all animated elements is stopped.
+
+```js
+var stopFn = vq.stop([el1, el2, el3]);
+
+var seq = vq.sequence([
+  vq(el1, animation1),
+  vq(el2, animation2),
+  vq(el3, animation3)
+])();
+
+setTimeout(stopFn, 3000); // stop `seq` animations after 3000msec
+```
+
 ### Event helpers
 
 #### DOM Event helpers

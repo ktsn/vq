@@ -1,11 +1,9 @@
 window.Velocity = function(...args) {
-  velocityStub.__stub.args = args;
+  velocityStub.__stub.push({ args });
 };
 
 function velocityStub() {
-  velocityStub.__stub = {
-    args: []
-  };
+  velocityStub.__stub = [];
 
   return velocityStub.__stub;
 }
