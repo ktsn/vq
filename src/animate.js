@@ -5,4 +5,8 @@ if (typeof Velocity === 'function') {
   animate = $.Velocity;
 }
 
-export default animate;
+function stop(el) {
+  animate(el, 'stop');
+}
+
+export { animate, stop };

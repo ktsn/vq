@@ -1,5 +1,6 @@
 import chain from './chain';
 import {unify, clone, noop} from './utils';
+import {stop as _stop} from './animate';
 
 export function vq(el, props, opts = null) {
   if (!el || !props) throw new Error('Must have two or three args');
@@ -53,6 +54,12 @@ export function parallel(fns) {
     };
 
     fns.map(unify).forEach(fn => fn(listener));
+  };
+}
+
+export function stop(els) {
+  return function() {
+    els.forEach(_stop);
   };
 }
 
